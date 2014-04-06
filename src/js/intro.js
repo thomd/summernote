@@ -1,6 +1,6 @@
 /**
  * Super simple wysiwyg editor on Bootstrap v@VERSION
- * http://hackerwins.github.io/summernote/
+ * https://github.com/thomd/summernote (forked from http://hackerwins.github.io/summernote/)
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors

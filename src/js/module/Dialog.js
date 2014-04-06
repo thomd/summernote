@@ -1,6 +1,6 @@
 define('summernote/module/Dialog', function () {
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -67,8 +67,8 @@ define('summernote/module/Dialog', function () {
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -114,6 +114,53 @@ define('summernote/module/Dialog', function () {
         var $linkText = $linkDialog.find('.note-link-text'),
         $linkUrl = $linkDialog.find('.note-link-url'),
         $linkBtn = $linkDialog.find('.note-link-btn'),
+        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+
+        $linkDialog.one('shown.bs.modal', function (event) {
+          event.stopPropagation();
+
+          $linkText.val(linkInfo.text);
+
+          $linkUrl.keyup(function () {
+            toggleBtn($linkBtn, $linkUrl.val());
+            // display same link on `Text to display` input
+            // when create a new link
+            if (!linkInfo.text) {
+              $linkText.val($linkUrl.val());
+            }
+          }).val(linkInfo.url).trigger('focus');
+
+          $openInNewWindow.prop('checked', linkInfo.newWindow);
+
+          $linkBtn.one('click', function (event) {
+            event.preventDefault();
+
+            $linkDialog.modal('hide');
+            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
+          });
+        }).one('hidden.bs.modal', function (event) {
+          event.stopPropagation();
+
+          $editable.focus();
+          $linkUrl.off('keyup');
+        }).modal('show');
+      }).promise();
+    };
+
+    /**
+     * Show document dialog and set event handlers on dialog controls.
+     *
+     * @param {jQuery} $dialog
+     * @param {Object} linkInfo
+     * @return {Promise}
+     */
+    this.showDocumentDialog = function ($editable, $dialog, linkInfo) {
+      return $.Deferred(function (deferred) {
+        var $linkDialog = $dialog.find('.note-search-dialog');
+
+        var $linkText = $linkDialog.find('.note-search-text'),
+        $linkUrl = $linkDialog.find('.note-search-url'),
+        $linkBtn = $linkDialog.find('.note-search-btn'),
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function (event) {

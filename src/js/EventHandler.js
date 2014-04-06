@@ -92,7 +92,7 @@ define([
             scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          
+
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -161,6 +161,14 @@ define([
 
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+            editor.restoreRange($editable);
+            editor.createLink($editable, sLinkUrl, bNewWindow);
+          });
+        } else if (sEvent === 'showDocumentDialog') {
+          $editable.focus();
+          var documentLinkInfo = editor.getLinkInfo();
+          editor.saveRange($editable);
+          dialog.showDocumentDialog($editable, $dialog, documentLinkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
             editor.createLink($editable, sLinkUrl, bNewWindow);
           });

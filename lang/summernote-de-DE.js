@@ -33,6 +33,10 @@
         url: 'Ziel des Links?',
         openInNewWindow: 'In einem neuen Fenster öffnen'
       },
+      document: {
+        link: 'Dokument',
+        insert: 'Link zu Dokument einfügen'
+      },
       video: {
         video: 'Video',
         videoLink: 'Video Link',
