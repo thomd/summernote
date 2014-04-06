@@ -545,10 +545,10 @@
   .note-editor .dl-horizontal dd:after {
     content: " ";
     /* 1 */
-  
+
     display: table;
     /* 2 */
-  
+
   }
   .note-editor .dl-horizontal dd:after {
     clear: both;
@@ -557,10 +557,10 @@
   .note-editor .dl-horizontal dd:after {
     content: " ";
     /* 1 */
-  
+
     display: table;
     /* 2 */
-  
+
   }
   .note-editor .dl-horizontal dd:after {
     clear: both;
@@ -1614,6 +1614,7 @@
 .note-editor .form-control::-webkit-input-placeholder {
   color: #999999;
 }
+/*
 .note-editor .form-control {
   display: block;
   width: 100%;
@@ -1632,6 +1633,7 @@
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+*/
 .note-editor .form-control:focus {
   border-color: #66afe9;
   outline: 0;
@@ -1866,7 +1868,8 @@ textarea.note-editor .input-lg {
     text-align: right;
   }
 }
-.note-editor .btn {
+
+.note-editor .btn-default {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -1886,32 +1889,39 @@ textarea.note-editor .input-lg {
   -o-user-select: none;
   user-select: none;
 }
-.note-editor .btn:focus {
+.note-editor .btn-default:focus {
   outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-.note-editor .btn:hover,
-.note-editor .btn:focus {
+.note-editor .btn-default:hover,
+.note-editor .btn-default:focus {
   color: #333333;
   text-decoration: none;
 }
-.note-editor .btn:active,
-.note-editor .btn.active {
+.note-editor .btn-default:active,
+.note-editor .btn-default.active {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-.note-editor .btn.disabled,
-.note-editor .btn[disabled],
-fieldset[disabled] .note-editor .btn {
+.note-editor .btn-default.disabled,
+.note-editor .btn-default[disabled],
+fieldset[disabled] .note-editor .btn-default {
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.65;
   filter: alpha(opacity=65);
   -webkit-box-shadow: none;
   box-shadow: none;
+}
+.note-editor .btn-default [class^="icon-"],
+.note-editor .btn-default [class*=" icon-"],
+.note-editor li a [class^="icon-"],
+.note-editor li a [class*=" icon-"] {
+  line-height: 1.2em;
+  margin-right: 0px;
 }
 .note-editor .btn-default {
   color: #333333;
@@ -1950,6 +1960,7 @@ fieldset[disabled] .note-editor .btn-default.active {
   background-color: #ffffff;
   border-color: #cccccc;
 }
+/*
 .note-editor .btn-primary {
   color: #ffffff;
   background-color: #428bca;
@@ -1987,6 +1998,7 @@ fieldset[disabled] .note-editor .btn-primary.active {
   background-color: #428bca;
   border-color: #357ebd;
 }
+*/
 .note-editor .btn-warning {
   color: #ffffff;
   background-color: #f0ad4e;
@@ -2861,7 +2873,6 @@ fieldset[disabled] .note-editor .btn-link:focus {
   z-index: 1000;
   display: none;
   float: left;
-  min-width: 160px;
   padding: 5px 0;
   margin: 2px 0 0;
   list-style: none;
@@ -2966,7 +2977,7 @@ fieldset[disabled] .note-editor .btn-link:focus {
 .btn-default .note-editor .caret {
   border-top-color: #333333;
 }
-.btn-primary .note-editor .caret,
+/*.btn-primary .note-editor .caret,*/
 .btn-success .note-editor .caret,
 .btn-warning .note-editor .caret,
 .btn-danger .note-editor .caret,
@@ -2976,7 +2987,7 @@ fieldset[disabled] .note-editor .btn-link:focus {
 .note-editor .dropup .btn-default .caret {
   border-bottom-color: #333333;
 }
-.note-editor .dropup .btn-primary .caret,
+/*.note-editor .dropup .btn-primary .caret,*/
 .note-editor .dropup .btn-success .caret,
 .note-editor .dropup .btn-warning .caret,
 .note-editor .dropup .btn-danger .caret,
@@ -5219,7 +5230,7 @@ button.note-editor .close {
   max-width: 276px;
   padding: 1px;
   text-align: left;
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   background-clip: padding-box;
   border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -5967,4 +5978,9 @@ td.visible-print {
   td.hidden-print {
     display: none !important;
   }
+}
+
+/* don't show toolbar for */
+.noFormating + .note-editor > .note-toolbar {
+  display:  none;
 }

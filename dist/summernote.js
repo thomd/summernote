@@ -1,12 +1,12 @@
 /**
  * Super simple wysiwyg editor on Bootstrap v0.5.2
- * http://hackerwins.github.io/summernote/
+ * https://github.com/thomd/summernote (forked from http://hackerwins.github.io/summernote/)
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-05T08:18Z
+ * Date: 2014-04-06T19:35Z
  */
 (function (factory) {
   /* global define */
@@ -749,6 +749,10 @@
           textToDisplay: 'Text to display',
           url: 'To what URL should this link go?',
           openInNewWindow: 'Open in new window'
+        },
+        document: {
+          link: 'Document',
+          insert: 'Insert Link to Document'
         },
         video: {
           video: 'Video',
@@ -2008,7 +2012,7 @@
   };
 
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -2075,8 +2079,8 @@
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -2122,6 +2126,53 @@
         var $linkText = $linkDialog.find('.note-link-text'),
         $linkUrl = $linkDialog.find('.note-link-url'),
         $linkBtn = $linkDialog.find('.note-link-btn'),
+        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+
+        $linkDialog.one('shown.bs.modal', function (event) {
+          event.stopPropagation();
+
+          $linkText.val(linkInfo.text);
+
+          $linkUrl.keyup(function () {
+            toggleBtn($linkBtn, $linkUrl.val());
+            // display same link on `Text to display` input
+            // when create a new link
+            if (!linkInfo.text) {
+              $linkText.val($linkUrl.val());
+            }
+          }).val(linkInfo.url).trigger('focus');
+
+          $openInNewWindow.prop('checked', linkInfo.newWindow);
+
+          $linkBtn.one('click', function (event) {
+            event.preventDefault();
+
+            $linkDialog.modal('hide');
+            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
+          });
+        }).one('hidden.bs.modal', function (event) {
+          event.stopPropagation();
+
+          $editable.focus();
+          $linkUrl.off('keyup');
+        }).modal('show');
+      }).promise();
+    };
+
+    /**
+     * Show document dialog and set event handlers on dialog controls.
+     *
+     * @param {jQuery} $dialog
+     * @param {Object} linkInfo
+     * @return {Promise}
+     */
+    this.showDocumentDialog = function ($editable, $dialog, linkInfo) {
+      return $.Deferred(function (deferred) {
+        var $linkDialog = $dialog.find('.note-search-dialog');
+
+        var $linkText = $linkDialog.find('.note-search-text'),
+        $linkUrl = $linkDialog.find('.note-search-url'),
+        $linkBtn = $linkDialog.find('.note-search-btn'),
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function (event) {
@@ -2255,7 +2306,7 @@
             scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          
+
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -2324,6 +2375,14 @@
 
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+            editor.restoreRange($editable);
+            editor.createLink($editable, sLinkUrl, bNewWindow);
+          });
+        } else if (sEvent === 'showDocumentDialog') {
+          $editable.focus();
+          var documentLinkInfo = editor.getLinkInfo();
+          editor.saveRange($editable);
+          dialog.showDocumentDialog($editable, $dialog, documentLinkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
             editor.createLink($editable, sLinkUrl, bNewWindow);
           });
@@ -2692,6 +2751,9 @@
       link: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
       },
+      document: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.document.link + '" data-event="showDocumentDialog" tabindex="-1"><i class="fa fa-file-text-o icon-file-text-alt"></i></button>';
+      },
       video: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
       },
@@ -3038,6 +3100,32 @@
                '</div>';
       };
 
+      var tplDocumentDialog = function () {
+        return '<div class="note-search-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.document.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+                         '<div class="input-group">' +
+                           '<input class="note-search-url form-control span12" type="text" />' +
+                             '<span class="input-group-btn">' +
+                               '<button class="btn btn-default" type="button">Search</button>' +
+                           '</span>' +
+                         '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-search-btn disabled" disabled="disabled">' + lang.document.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+      };
+
       var tplVideoDialog = function () {
         return '<div class="note-video-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
@@ -3081,6 +3169,7 @@
       return '<div class="note-dialog">' +
                tplImageDialog() +
                tplLinkDialog() +
+               tplDocumentDialog() +
                tplVideoDialog() +
                tplHelpDialog() +
              '</div>';

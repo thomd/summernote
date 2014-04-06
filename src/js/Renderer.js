@@ -17,6 +17,9 @@ define([
       link: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
       },
+      document: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.document.link + '" data-event="showDocumentDialog" tabindex="-1"><i class="fa fa-file-text-o icon-file-text-alt"></i></button>';
+      },
       video: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
       },
@@ -363,6 +366,32 @@ define([
                '</div>';
       };
 
+      var tplDocumentDialog = function () {
+        return '<div class="note-search-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.document.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+                         '<div class="input-group">' +
+                           '<input class="note-search-url form-control span12" type="text" />' +
+                             '<span class="input-group-btn">' +
+                               '<button class="btn btn-default" type="button">Search</button>' +
+                           '</span>' +
+                         '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-search-btn disabled" disabled="disabled">' + lang.document.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+      };
+
       var tplVideoDialog = function () {
         return '<div class="note-video-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
@@ -406,6 +435,7 @@ define([
       return '<div class="note-dialog">' +
                tplImageDialog() +
                tplLinkDialog() +
+               tplDocumentDialog() +
                tplVideoDialog() +
                tplHelpDialog() +
              '</div>';
