@@ -8,7 +8,8 @@ define('summernote/settings', function () {
      */
     options: {
       width: null,                  // set editor width
-      height: null,                 // set editable height, ex) 300
+      height: null,                 // set fixed editable height with statusbar
+      minHeight: null,              // set dynamic editable min-height without statusbar (height must be 'null')
 
       focus: false,                 // set focus after initilize summernote
 

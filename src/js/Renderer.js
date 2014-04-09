@@ -519,6 +519,8 @@ define([
           .prependTo($editor);
       if (options.height) {
         $editable.height(options.height);
+      } else if (options.minHeight > 0) {
+        $editable.css({'min-height': options.minHeight + 'px'});
       }
       if (options.direction) {
         $editable.attr('dir', options.direction);
