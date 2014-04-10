@@ -6,11 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
-<<<<<<< HEAD
- * Date: 2014-04-06T19:35Z
-=======
- * Date: 2014-04-09T20:40Z
->>>>>>> 306bf7a4e1e7f912adc8bedc21742e2373302f91
+ * Date: 2014-04-10T07:03Z
  */
 (function (factory) {
   /* global define */
