@@ -6,7 +6,11 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
+<<<<<<< HEAD
  * Date: 2014-04-06T19:35Z
+=======
+ * Date: 2014-04-09T20:40Z
+>>>>>>> 306bf7a4e1e7f912adc8bedc21742e2373302f91
  */
 (function (factory) {
   /* global define */
@@ -613,7 +617,8 @@
      */
     options: {
       width: null,                  // set editor width
-      height: null,                 // set editable height, ex) 300
+      height: null,                 // set fixed editable height with statusbar
+      minHeight: null,              // set dynamic editable min-height without statusbar (height must be 'null')
 
       focus: false,                 // set focus after initilize summernote
 
@@ -3253,6 +3258,8 @@
           .prependTo($editor);
       if (options.height) {
         $editable.height(options.height);
+      } else if (options.minHeight > 0) {
+        $editable.css({'min-height': options.minHeight + 'px'});
       }
       if (options.direction) {
         $editable.attr('dir', options.direction);
