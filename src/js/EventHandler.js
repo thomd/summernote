@@ -164,13 +164,16 @@ define([
             editor.restoreRange($editable);
             editor.createLink($editable, sLinkUrl, bNewWindow);
           });
-        } else if (sEvent === 'showDocumentDialog') {
+        } else if (sEvent === 'showDocumentDialog') { // popover to dialog
           $editable.focus();
           var documentLinkInfo = editor.getLinkInfo();
+          var searchSuggestion = options.documentSearchQuery || '';
+
           editor.saveRange($editable);
-          dialog.showDocumentDialog($editable, $dialog, documentLinkInfo).then(function (sLinkUrl, bNewWindow) {
+          dialog.showDocumentDialog($editable, $dialog, documentLinkInfo, searchSuggestion, options.onDocumentLoad)
+              .then(function (sDocumentUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, bNewWindow);
+            editor.createLink($editable, sDocumentUrl, bNewWindow);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();

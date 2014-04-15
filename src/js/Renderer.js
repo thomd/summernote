@@ -313,13 +313,15 @@ define([
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.image.insert + '</h4>' +
+                       '<h3>' + lang.image.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
-                       '<div class="row-fluid">' +
-                         '<h5>' + lang.image.selectFromFiles + '</h5>' +
-                         '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                         '<h5>' + lang.image.url + '</h5>' +
+                       '<div class="form-group">' +
+                         '<label>' + lang.image.selectFromFiles + '</label>' +
+                         '<input class="note-image-input text-muted" type="file" name="files" accept="image/*" />' +
+                       '</div>' +
+                       '<div class="form-group">' +
+                         '<label>' + lang.image.url + '</label>' +
                          '<input class="note-image-url form-control span12" type="text" />' +
                        '</div>' +
                      '</div>' +
@@ -337,7 +339,7 @@ define([
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.link.insert + '</h4>' +
+                       '<h3>' + lang.link.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
@@ -372,20 +374,24 @@ define([
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.document.insert + '</h4>' +
+                       '<h3>' + lang.document.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
+                         '<div class="form-group">' +
+                         '<label>' + lang.document.label + '</label>&nbsp;<small class="text-muted">' + lang.document.hint + '</small>' +
                          '<div class="input-group">' +
-                           '<input class="note-search-url form-control span12" type="text" />' +
-                             '<span class="input-group-btn">' +
-                               '<button class="btn btn-default" type="button">Search</button>' +
+                           '<input class="note-search-query form-control span12" type="text" />' +
+                           '<span class="input-group-btn">' +
+                             '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
                            '</span>' +
+                           '</div>' +
                          '</div>' +
                        '</div>' +
-                     '</div>' +
-                     '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-search-btn disabled" disabled="disabled">' + lang.document.insert + '</button>' +
+                       '<div class="row-fluid">' +
+                         '<div class="note-search-results">' +
+                         '</div>' +
+                       '</div>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -398,7 +404,7 @@ define([
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.video.insert + '</h4>' +
+                       '<h3>' + lang.video.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +

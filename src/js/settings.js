@@ -21,6 +21,8 @@ define('summernote/settings', function () {
 
       codemirror: null,             // codemirror options
 
+      documentSearchQuery: null,    // search query for document linking
+
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
       direction: null,              // text direction, ex) 'rtl'
@@ -50,6 +52,7 @@ define('summernote/settings', function () {
       onImageUpload: null,      // imageUploadHandler
       onImageUploadError: null, // imageUploadErrorHandler
       onToolbarClick: null,
+      onDocumentLoad: null,
 
       keyMap: {
         pc: {
@@ -148,7 +151,10 @@ define('summernote/settings', function () {
         },
         document: {
           link: 'Document',
-          insert: 'Insert Link to Document'
+          insert: 'Insert Link to Document',
+          search: 'Search',
+          label: 'Searchterm',
+          hint: '(only public content will be found)'
         },
         video: {
           video: 'Video',

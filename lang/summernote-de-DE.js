@@ -34,8 +34,11 @@
         openInNewWindow: 'In einem neuen Fenster öffnen'
       },
       document: {
-        link: 'Dokument',
-        insert: 'Link zu Dokument einfügen'
+        link: 'Dokument Link',
+        insert: 'Dokument Link einfügen',
+        search: 'Suchen',
+        label: 'Suchbegriff',
+        hint: '(es werden nur öffentliche Inhalte gefunden)'
       },
       video: {
         video: 'Video',

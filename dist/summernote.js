@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-10T07:03Z
+ * Date: 2014-04-15T10:28Z
  */
 (function (factory) {
   /* global define */
@@ -236,7 +236,7 @@
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
     };
-  
+
     var isControlSizing = function (node) {
       return node && $(node).hasClass('note-control-sizing');
     };
@@ -274,12 +274,12 @@
         return node && node.nodeName === sNodeName;
       };
     };
-  
+
     var isPara = function (node) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
     };
-  
+
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
     };
@@ -287,7 +287,7 @@
     var isCell = function (node) {
       return node && /^TD|^TH/.test(node.nodeName);
     };
-  
+
     /**
      * find nearest ancestor predicate hit
      *
@@ -303,7 +303,7 @@
       }
       return null;
     };
-  
+
     /**
      * returns new array of ancestor nodes (until predicate hit).
      *
@@ -312,7 +312,7 @@
      */
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
-  
+
       var aAncestor = [];
       ancestor(node, function (el) {
         aAncestor.push(el);
@@ -320,7 +320,7 @@
       });
       return aAncestor;
     };
-  
+
     /**
      * returns common ancestor node between two nodes.
      *
@@ -334,7 +334,7 @@
       }
       return null; // difference document area
     };
-  
+
     /**
      * listing all Nodes between two nodes.
      * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
@@ -344,7 +344,7 @@
      */
     var listBetween = function (nodeA, nodeB) {
       var aNode = [];
-  
+
       var bStart = false, bEnd = false;
 
       // DFS(depth first search) with commonAcestor.
@@ -358,10 +358,10 @@
           fnWalk(node.childNodes[idx]);
         }
       })(commonAncestor(nodeA, nodeB));
-  
+
       return aNode;
     };
-  
+
     /**
      * listing all previous siblings (until predicate hit).
      * @param {Element} node
@@ -369,7 +369,7 @@
      */
     var listPrev = function (node, pred) {
       pred = pred || func.fail;
-  
+
       var aNext = [];
       while (node) {
         aNext.push(node);
@@ -378,7 +378,7 @@
       }
       return aNext;
     };
-  
+
     /**
      * listing next siblings (until predicate hit).
      *
@@ -387,7 +387,7 @@
      */
     var listNext = function (node, pred) {
       pred = pred || func.fail;
-  
+
       var aNext = [];
       while (node) {
         aNext.push(node);
@@ -419,7 +419,7 @@
 
       return aDescendant;
     };
-  
+
     /**
      * insert node after preceding
      *
@@ -435,7 +435,7 @@
       }
       return node;
     };
-  
+
     /**
      * append elements.
      *
@@ -448,9 +448,9 @@
       });
       return node;
     };
-  
+
     var isText = makePredByNodeName('#text');
-  
+
     /**
      * returns #text's text size or element's childNodes size
      *
@@ -460,7 +460,7 @@
       if (isText(node)) { return node.nodeValue.length; }
       return node.childNodes.length;
     };
-  
+
     /**
      * returns offset from parent.
      *
@@ -471,7 +471,7 @@
       while ((node = node.previousSibling)) { offset += 1; }
       return offset;
     };
-  
+
     /**
      * return offsetPath(array of offset) from ancestor
      *
@@ -482,7 +482,7 @@
       var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
       return $.map(aAncestor, position).reverse();
     };
-  
+
     /**
      * return element from offsetPath(array of offset)
      *
@@ -496,7 +496,7 @@
       }
       return current;
     };
-  
+
     /**
      * split element or #text
      *
@@ -506,16 +506,16 @@
     var splitData = function (node, offset) {
       if (offset === 0) { return node; }
       if (offset >= length(node)) { return node.nextSibling; }
-  
+
       // splitText
       if (isText(node)) { return node.splitText(offset); }
-  
+
       // splitElement
       var child = node.childNodes[offset];
       node = insertAfter(node.cloneNode(false), node);
       return appends(node, listNext(child));
     };
-  
+
     /**
      * split dom tree by boundaryPoint(pivot and offset)
      *
@@ -536,7 +536,7 @@
         return clone;
       });
     };
-  
+
     /**
      * remove node, (bRemoveChild: remove child or not)
      * @param {Element} node
@@ -545,7 +545,7 @@
     var remove = function (node, bRemoveChild) {
       if (!node || !node.parentNode) { return; }
       if (node.removeNode) { return node.removeNode(bRemoveChild); }
-  
+
       var elParent = node.parentNode;
       if (!bRemoveChild) {
         var aNode = [];
@@ -553,22 +553,22 @@
         for (i = 0, sz = node.childNodes.length; i < sz; i++) {
           aNode.push(node.childNodes[i]);
         }
-  
+
         for (i = 0, sz = aNode.length; i < sz; i++) {
           elParent.insertBefore(aNode[i], node);
         }
       }
-  
+
       elParent.removeChild(node);
     };
-  
+
     var html = function ($node) {
       return dom.isTextarea($node[0]) ? $node.val() : $node.html();
     };
-  
+
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '<p><br/></p>',
+      emptyPara: '',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
@@ -626,6 +626,8 @@
 
       codemirror: null,             // codemirror options
 
+      documentSearchQuery: null,    // search query for document linking
+
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
       direction: null,              // text direction, ex) 'rtl'
@@ -655,6 +657,7 @@
       onImageUpload: null,      // imageUploadHandler
       onImageUploadError: null, // imageUploadErrorHandler
       onToolbarClick: null,
+      onDocumentLoad: null,
 
       keyMap: {
         pc: {
@@ -753,7 +756,10 @@
         },
         document: {
           link: 'Document',
-          insert: 'Insert Link to Document'
+          insert: 'Insert Link to Document',
+          search: 'Search',
+          label: 'Searchterm',
+          hint: '(only public content will be found)'
         },
         video: {
           video: 'Video',
@@ -2163,49 +2169,63 @@
     /**
      * Show document dialog and set event handlers on dialog controls.
      *
+     * TODO
+     *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
+     * @param {String} searchquery
+     * @param {Function} onDocumentLoad callback
      * @return {Promise}
      */
-    this.showDocumentDialog = function ($editable, $dialog, linkInfo) {
+    this.showDocumentDialog = function ($editable, $dialog, linkInfo, searchSuggestion, onDocumentLoad) {
       return $.Deferred(function (deferred) {
-        var $linkDialog = $dialog.find('.note-search-dialog');
 
-        var $linkText = $linkDialog.find('.note-search-text'),
-        $linkUrl = $linkDialog.find('.note-search-url'),
-        $linkBtn = $linkDialog.find('.note-search-btn'),
-        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+        var $documentDialog = $dialog.find('.note-search-dialog'),
+        $searchQuery = $documentDialog.find('.note-search-query'),
+        $searchResults = $documentDialog.find('.note-search-results'),
+        $searchBtn = $documentDialog.find('.note-search-btn');
 
-        $linkDialog.one('shown.bs.modal', function (event) {
+        var loadDocuments = function (query, callback) {
+          if (!callback) {
+            return;
+          }
+          var loading = $.Deferred();
+          callback($searchResults, query, loading);
+          loading.done(function () {
+            $('.note-search-results a').one('click', function (event) {
+              event.preventDefault();
+              $documentDialog.modal('hide');
+              var openInNewWindow = linkInfo.newWindow || true;
+              deferred.resolve(this.href, openInNewWindow);
+            });
+          });
+        };
+
+        $documentDialog.one('shown.bs.modal', function (event) {
           event.stopPropagation();
 
-          $linkText.val(linkInfo.text);
+          $searchQuery.keyup(function () {
+            toggleBtn($searchBtn, $searchQuery.val());
+          }).val(searchSuggestion);
 
-          $linkUrl.keyup(function () {
-            toggleBtn($linkBtn, $linkUrl.val());
-            // display same link on `Text to display` input
-            // when create a new link
-            if (!linkInfo.text) {
-              $linkText.val($linkUrl.val());
-            }
-          }).val(linkInfo.url).trigger('focus');
+          if (searchSuggestion === '') {
+            $searchQuery.trigger('focus');
+          }
 
-          $openInNewWindow.prop('checked', linkInfo.newWindow);
-
-          $linkBtn.one('click', function (event) {
+          $searchBtn.on('click', function (event) {
             event.preventDefault();
-
-            $linkDialog.modal('hide');
-            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
+            loadDocuments($searchQuery.val(), onDocumentLoad);
           });
+
+          loadDocuments(searchSuggestion, onDocumentLoad);
         }).one('hidden.bs.modal', function (event) {
           event.stopPropagation();
-
           $editable.focus();
-          $linkUrl.off('keyup');
+          $searchQuery.off('keyup');
         }).modal('show');
       }).promise();
     };
+
 
     /**
      * show help dialog
@@ -2379,13 +2399,16 @@
             editor.restoreRange($editable);
             editor.createLink($editable, sLinkUrl, bNewWindow);
           });
-        } else if (sEvent === 'showDocumentDialog') {
+        } else if (sEvent === 'showDocumentDialog') { // popover to dialog
           $editable.focus();
           var documentLinkInfo = editor.getLinkInfo();
+          var searchSuggestion = options.documentSearchQuery || '';
+
           editor.saveRange($editable);
-          dialog.showDocumentDialog($editable, $dialog, documentLinkInfo).then(function (sLinkUrl, bNewWindow) {
+          dialog.showDocumentDialog($editable, $dialog, documentLinkInfo, searchSuggestion, options.onDocumentLoad)
+              .then(function (sDocumentUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, bNewWindow);
+            editor.createLink($editable, sDocumentUrl, bNewWindow);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
@@ -3048,13 +3071,15 @@
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.image.insert + '</h4>' +
+                       '<h3>' + lang.image.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
-                       '<div class="row-fluid">' +
-                         '<h5>' + lang.image.selectFromFiles + '</h5>' +
-                         '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                         '<h5>' + lang.image.url + '</h5>' +
+                       '<div class="form-group">' +
+                         '<label>' + lang.image.selectFromFiles + '</label>' +
+                         '<input class="note-image-input text-muted" type="file" name="files" accept="image/*" />' +
+                       '</div>' +
+                       '<div class="form-group">' +
+                         '<label>' + lang.image.url + '</label>' +
                          '<input class="note-image-url form-control span12" type="text" />' +
                        '</div>' +
                      '</div>' +
@@ -3072,7 +3097,7 @@
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.link.insert + '</h4>' +
+                       '<h3>' + lang.link.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
@@ -3107,20 +3132,24 @@
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.document.insert + '</h4>' +
+                       '<h3>' + lang.document.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
+                         '<div class="form-group">' +
+                         '<label>' + lang.document.label + '</label>&nbsp;<small class="text-muted">' + lang.document.hint + '</small>' +
                          '<div class="input-group">' +
-                           '<input class="note-search-url form-control span12" type="text" />' +
-                             '<span class="input-group-btn">' +
-                               '<button class="btn btn-default" type="button">Search</button>' +
+                           '<input class="note-search-query form-control span12" type="text" />' +
+                           '<span class="input-group-btn">' +
+                             '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
                            '</span>' +
+                           '</div>' +
                          '</div>' +
                        '</div>' +
-                     '</div>' +
-                     '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-search-btn disabled" disabled="disabled">' + lang.document.insert + '</button>' +
+                       '<div class="row-fluid">' +
+                         '<div class="note-search-results">' +
+                         '</div>' +
+                       '</div>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -3133,7 +3162,7 @@
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.video.insert + '</h4>' +
+                       '<h3>' + lang.video.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +

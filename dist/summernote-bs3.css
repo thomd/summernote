@@ -389,6 +389,7 @@
 .note-editor .text-center {
   text-align: center;
 }
+/*
 .note-editor h1,
 .note-editor h2,
 .note-editor h3,
@@ -406,6 +407,7 @@
   line-height: 1.1;
   color: inherit;
 }
+*/
 .note-editor h1 small,
 .note-editor h2 small,
 .note-editor h3 small,
@@ -434,9 +436,9 @@
   line-height: 1;
   color: #999999;
 }
-.note-editor h1,
-.note-editor h2,
-.note-editor h3 {
+.note-editor .modal-header h1,
+.note-editor .modal-header h2,
+.note-editor .modal-header h3 {
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -5983,4 +5985,22 @@ td.visible-print {
 /* don't show toolbar for */
 .noFormating + .note-editor > .note-toolbar {
   display:  none;
+}
+
+/* ------------- document links dialog ------------------ */
+.note-search-results {
+	min-height: 100px;
+}
+.note-search-results ul {
+	padding-left: 0;
+	margin-top: 20px;
+	overflow: scroll;
+	max-height: 300px;
+}
+.note-editor .note-search-dialog .form-group label {
+	display: inline-block;
+	margin-bottom: 5px;
+}
+.note-editor .note-search-results p {
+	padding: 0 15px;
 }

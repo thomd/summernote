@@ -150,49 +150,63 @@ define('summernote/module/Dialog', function () {
     /**
      * Show document dialog and set event handlers on dialog controls.
      *
+     * TODO
+     *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
+     * @param {String} searchquery
+     * @param {Function} onDocumentLoad callback
      * @return {Promise}
      */
-    this.showDocumentDialog = function ($editable, $dialog, linkInfo) {
+    this.showDocumentDialog = function ($editable, $dialog, linkInfo, searchSuggestion, onDocumentLoad) {
       return $.Deferred(function (deferred) {
-        var $linkDialog = $dialog.find('.note-search-dialog');
 
-        var $linkText = $linkDialog.find('.note-search-text'),
-        $linkUrl = $linkDialog.find('.note-search-url'),
-        $linkBtn = $linkDialog.find('.note-search-btn'),
-        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+        var $documentDialog = $dialog.find('.note-search-dialog'),
+        $searchQuery = $documentDialog.find('.note-search-query'),
+        $searchResults = $documentDialog.find('.note-search-results'),
+        $searchBtn = $documentDialog.find('.note-search-btn');
 
-        $linkDialog.one('shown.bs.modal', function (event) {
+        var loadDocuments = function (query, callback) {
+          if (!callback) {
+            return;
+          }
+          var loading = $.Deferred();
+          callback($searchResults, query, loading);
+          loading.done(function () {
+            $('.note-search-results a').one('click', function (event) {
+              event.preventDefault();
+              $documentDialog.modal('hide');
+              var openInNewWindow = linkInfo.newWindow || true;
+              deferred.resolve(this.href, openInNewWindow);
+            });
+          });
+        };
+
+        $documentDialog.one('shown.bs.modal', function (event) {
           event.stopPropagation();
 
-          $linkText.val(linkInfo.text);
+          $searchQuery.keyup(function () {
+            toggleBtn($searchBtn, $searchQuery.val());
+          }).val(searchSuggestion);
 
-          $linkUrl.keyup(function () {
-            toggleBtn($linkBtn, $linkUrl.val());
-            // display same link on `Text to display` input
-            // when create a new link
-            if (!linkInfo.text) {
-              $linkText.val($linkUrl.val());
-            }
-          }).val(linkInfo.url).trigger('focus');
+          if (searchSuggestion === '') {
+            $searchQuery.trigger('focus');
+          }
 
-          $openInNewWindow.prop('checked', linkInfo.newWindow);
-
-          $linkBtn.one('click', function (event) {
+          $searchBtn.on('click', function (event) {
             event.preventDefault();
-
-            $linkDialog.modal('hide');
-            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
+            loadDocuments($searchQuery.val(), onDocumentLoad);
           });
+
+          loadDocuments(searchSuggestion, onDocumentLoad);
         }).one('hidden.bs.modal', function (event) {
           event.stopPropagation();
-
           $editable.focus();
-          $linkUrl.off('keyup');
+          $searchQuery.off('keyup');
         }).modal('show');
       }).promise();
     };
+
 
     /**
      * show help dialog
