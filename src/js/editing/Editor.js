@@ -82,7 +82,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} nTabsize
      */
@@ -98,7 +98,7 @@ define([
 
     /**
      * handle tab key
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Number} nTabsize
      * @param {Boolean} bShift
      */
@@ -281,7 +281,7 @@ define([
      * @param {String} sLinkUrl
      * @param {Boolean} bNewWindow
      */
-    this.createLink = function ($editable, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, sLinkUrl, bAddProtocol, bNewWindow, sLinkText) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -289,7 +289,7 @@ define([
       var sLinkUrlWithProtocol = sLinkUrl;
       if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
         sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
-      } else if (sLinkUrl.indexOf('://') === -1) {
+      } else if (sLinkUrl.indexOf('://') === -1 && bAddProtocol) {
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
@@ -304,8 +304,18 @@ define([
         rng = range.create();
       }
 
-      // target
+      // attributes
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+
+        // link text
+        if (sLinkText !== undefined) {
+          elAnchor.innerHTML = sLinkText;
+        }
+
+        // title
+        $(elAnchor).attr('title', sLinkText || '');
+
+        // target
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
@@ -380,6 +390,13 @@ define([
     this.floatMe = function ($editable, sValue, $target) {
       recordUndo($editable);
       $target.css('float', sValue);
+      if (sValue === 'right') {
+        $target.css('margin', '0 0 0 15px');
+      } else if (sValue === 'left') {
+        $target.css('margin', '0 15px 0 0');
+      } else {
+        $target.css('margin', '0');
+      }
     };
 
     /**

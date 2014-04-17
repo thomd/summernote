@@ -162,7 +162,7 @@ define([
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, bNewWindow);
+            editor.createLink($editable, sLinkUrl, true, bNewWindow);
           });
         } else if (sEvent === 'showDocumentDialog') { // popover to dialog
           $editable.focus();
@@ -171,9 +171,9 @@ define([
 
           editor.saveRange($editable);
           dialog.showDocumentDialog($editable, $dialog, documentLinkInfo, searchSuggestion, options.onDocumentLoad)
-              .then(function (sDocumentUrl, bNewWindow) {
+              .then(function (sDocumentUrl, bNewWindow, sLinkText) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sDocumentUrl, bNewWindow);
+            editor.createLink($editable, sDocumentUrl, false, bNewWindow, sLinkText);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();

@@ -16,7 +16,7 @@ define('summernote/module/Handle', function () {
         var szImage = {w: $image.width(), h: $image.height()};
         $selection.css({
           display: 'block',
-          left: pos.left,
+          left: pos.left + parseInt($image.css('margin-left'), 10),
           top: pos.top,
           width: szImage.w,
           height: szImage.h

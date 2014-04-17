@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-15T11:40Z
+ * Date: 2014-04-17T15:20Z
  */
 (function (factory) {
   /* global define */
@@ -853,7 +853,7 @@
         }).readAsDataURL(file);
       }).promise();
     };
-  
+
     /**
      * create `<image>` from url string
      *
@@ -861,6 +861,7 @@
      * @return {Promise} - then: $image
      */
     var createImage = function (sUrl) {
+      var imageName = sUrl.replace(/^.*\//, '').replace(/\.\w+$/, '').replace(/^.*\./, '');
       return $.Deferred(function (deferred) {
         $('<img>').one('load', function () {
           deferred.resolve($(this));
@@ -868,7 +869,7 @@
           deferred.reject($(this));
         }).css({
           display: 'none'
-        }).appendTo(document.body).attr('src', sUrl);
+        }).appendTo(document.body).attr('src', sUrl).attr('alt', imageName).attr('title', imageName);
       }).promise();
     };
 
@@ -1404,7 +1405,7 @@
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} nTabsize
      */
@@ -1420,7 +1421,7 @@
 
     /**
      * handle tab key
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Number} nTabsize
      * @param {Boolean} bShift
      */
@@ -1603,7 +1604,7 @@
      * @param {String} sLinkUrl
      * @param {Boolean} bNewWindow
      */
-    this.createLink = function ($editable, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, sLinkUrl, bAddProtocol, bNewWindow, sLinkText) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -1611,7 +1612,7 @@
       var sLinkUrlWithProtocol = sLinkUrl;
       if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
         sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
-      } else if (sLinkUrl.indexOf('://') === -1) {
+      } else if (sLinkUrl.indexOf('://') === -1 && bAddProtocol) {
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
@@ -1626,8 +1627,18 @@
         rng = range.create();
       }
 
-      // target
+      // attributes
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+
+        // link text
+        if (sLinkText !== undefined) {
+          elAnchor.innerHTML = sLinkText;
+        }
+
+        // title
+        $(elAnchor).attr('title', sLinkText || '');
+
+        // target
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
@@ -1702,6 +1713,13 @@
     this.floatMe = function ($editable, sValue, $target) {
       recordUndo($editable);
       $target.css('float', sValue);
+      if (sValue === 'right') {
+        $target.css('margin', '0 0 0 15px');
+      } else if (sValue === 'left') {
+        $target.css('margin', '0 15px 0 0');
+      } else {
+        $target.css('margin', '0');
+      }
     };
 
     /**
@@ -2001,7 +2019,7 @@
         var szImage = {w: $image.width(), h: $image.height()};
         $selection.css({
           display: 'block',
-          left: pos.left,
+          left: pos.left + parseInt($image.css('margin-left'), 10),
           top: pos.top,
           width: szImage.w,
           height: szImage.h
@@ -2180,11 +2198,13 @@
           var loading = $.Deferred();
           callback($searchResults, query, loading);
           loading.done(function () {
-            $('.note-search-results a').one('click', function (event) {
+            $('.note-search-results li').one('click', function (event) {
               event.preventDefault();
               $documentDialog.modal('hide');
+              var url = $(this).find('a:first').attr('href');
+              var link = $(this).find('a:first').text();
               var openInNewWindow = linkInfo.newWindow || true;
-              deferred.resolve(this.href, openInNewWindow);
+              deferred.resolve(url, openInNewWindow, link);
             });
           });
         };
@@ -2384,7 +2404,7 @@
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, bNewWindow);
+            editor.createLink($editable, sLinkUrl, true, bNewWindow);
           });
         } else if (sEvent === 'showDocumentDialog') { // popover to dialog
           $editable.focus();
@@ -2393,9 +2413,9 @@
 
           editor.saveRange($editable);
           dialog.showDocumentDialog($editable, $dialog, documentLinkInfo, searchSuggestion, options.onDocumentLoad)
-              .then(function (sDocumentUrl, bNewWindow) {
+              .then(function (sDocumentUrl, bNewWindow, sLinkText) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sDocumentUrl, bNewWindow);
+            editor.createLink($editable, sDocumentUrl, false, bNewWindow, sLinkText);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
@@ -2824,7 +2844,7 @@
                '</ul>';
       },
       color: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + lang.color.recent + '" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
+        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + lang.color.recent + '" data-event="color" data-value=\'{"backColor":"transparent"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:transparent;"></i></button>' +
                '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.color.more + '" data-toggle="dropdown" tabindex="-1">' +
                  '<span class="caret"></span>' +
                '</button>' +
@@ -3124,12 +3144,12 @@
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
                          '<div class="form-group">' +
-                         '<label>' + lang.document.label + '</label>&nbsp;<small class="text-muted">' + lang.document.hint + '</small>' +
-                         '<div class="input-group">' +
-                           '<input class="note-search-query form-control span12" type="text" />' +
-                           '<span class="input-group-btn">' +
-                             '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
-                           '</span>' +
+                           '<label>' + lang.document.label + ' <small class="text-muted">' + lang.document.hint + '</small></label>' +
+                           '<div class="input-group">' +
+                             '<input class="note-search-query form-control span12" type="text" />' +
+                             '<span class="input-group-btn">' +
+                               '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
+                             '</span>' +
                            '</div>' +
                          '</div>' +
                        '</div>' +

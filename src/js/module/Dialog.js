@@ -161,11 +161,13 @@ define('summernote/module/Dialog', function () {
           var loading = $.Deferred();
           callback($searchResults, query, loading);
           loading.done(function () {
-            $('.note-search-results a').one('click', function (event) {
+            $('.note-search-results li').one('click', function (event) {
               event.preventDefault();
               $documentDialog.modal('hide');
+              var url = $(this).find('a:first').attr('href');
+              var link = $(this).find('a:first').text();
               var openInNewWindow = linkInfo.newWindow || true;
-              deferred.resolve(this.href, openInNewWindow);
+              deferred.resolve(url, openInNewWindow, link);
             });
           });
         };

@@ -79,7 +79,7 @@ define([
                '</ul>';
       },
       color: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + lang.color.recent + '" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
+        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + lang.color.recent + '" data-event="color" data-value=\'{"backColor":"transparent"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:transparent;"></i></button>' +
                '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.color.more + '" data-toggle="dropdown" tabindex="-1">' +
                  '<span class="caret"></span>' +
                '</button>' +
@@ -379,12 +379,12 @@ define([
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
                          '<div class="form-group">' +
-                         '<label>' + lang.document.label + '</label>&nbsp;<small class="text-muted">' + lang.document.hint + '</small>' +
-                         '<div class="input-group">' +
-                           '<input class="note-search-query form-control span12" type="text" />' +
-                           '<span class="input-group-btn">' +
-                             '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
-                           '</span>' +
+                           '<label>' + lang.document.label + ' <small class="text-muted">' + lang.document.hint + '</small></label>' +
+                           '<div class="input-group">' +
+                             '<input class="note-search-query form-control span12" type="text" />' +
+                             '<span class="input-group-btn">' +
+                               '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
+                             '</span>' +
                            '</div>' +
                          '</div>' +
                        '</div>' +
