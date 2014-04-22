@@ -279,7 +279,10 @@ define([
      *
      * @param {jQuery} $editable
      * @param {String} sLinkUrl
+     * @param {Boolean} bAddProtocol
      * @param {Boolean} bNewWindow
+     * @param {String} sLinkText
+     * @param {Boolean} bNewWindow [optional]
      */
     this.createLink = function ($editable, sLinkUrl, bAddProtocol, bNewWindow, sLinkText) {
       var rng = range.create();
@@ -391,11 +394,11 @@ define([
       recordUndo($editable);
       $target.css('float', sValue);
       if (sValue === 'right') {
-        $target.css('margin', '0 0 0 15px');
+        $target.css('padding', '0 0 0 15px');
       } else if (sValue === 'left') {
-        $target.css('margin', '0 15px 0 0');
+        $target.css('padding', '0 15px 0 0');
       } else {
-        $target.css('margin', '0');
+        $target.css('padding', '0');
       }
     };
 
