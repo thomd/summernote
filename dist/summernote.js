@@ -1,12 +1,12 @@
 /**
  * Super simple wysiwyg editor on Bootstrap v0.5.2
- * https://github.com/thomd/summernote (forked from http://hackerwins.github.io/summernote/)
+ * https://github.com/thomd/summernote
  *
  * summernote.js
- * Copyright 2013 Alan Hong. and outher contributors
+ * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-22T07:53Z
+ * Date: 2014-04-23T21:03Z
  */
 (function (factory) {
   /* global define */
@@ -754,7 +754,7 @@
           url: 'To what URL should this link go?',
           openInNewWindow: 'Open in new window'
         },
-        document: {
+        doclink: {
           link: 'Document',
           insert: 'Insert Link to Document',
           search: 'Search',
@@ -1607,7 +1607,7 @@
      * @param {String} sLinkText
      * @param {Boolean} bNewWindow [optional]
      */
-    this.createLink = function ($editable, sLinkUrl, bAddProtocol, bNewWindow, sLinkText) {
+    this.createLink = function ($editable, sLinkUrl, bAddProtocol, bNewWindow, oLinkInfo) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -1634,12 +1634,14 @@
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
 
         // link text
-        if (sLinkText !== undefined) {
-          elAnchor.innerHTML = sLinkText;
+        if (oLinkInfo && oLinkInfo.text !== '') {
+          elAnchor.innerHTML = oLinkInfo.text;
         }
 
         // title
-        $(elAnchor).attr('title', sLinkText || '');
+        if (oLinkInfo) {
+          $(elAnchor).attr('title', oLinkInfo.title);
+        }
 
         // target
         if (bNewWindow) {
@@ -1647,6 +1649,16 @@
         } else {
           $(elAnchor).removeAttr('target');
         }
+
+        // mark links to internal documents
+        if (oLinkInfo && oLinkInfo.type === 'internal') {
+          $(elAnchor).attr('rel', 'internal');
+        }
+
+        // append whitespace and place caret at the end
+        var whitespace = document.createTextNode('\u00A0');
+        elAnchor.parentNode.appendChild(whitespace);
+        window.getSelection().collapse(elAnchor.nextSibling, 1);
       });
     };
 
@@ -1716,13 +1728,6 @@
     this.floatMe = function ($editable, sValue, $target) {
       recordUndo($editable);
       $target.css('float', sValue);
-      if (sValue === 'right') {
-        $target.css('padding', '0 0 0 15px');
-      } else if (sValue === 'left') {
-        $target.css('padding', '0 15px 0 0');
-      } else {
-        $target.css('padding', '0');
-      }
     };
 
     /**
@@ -1983,6 +1988,11 @@
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
         $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
+        if (oStyle.anchor.rel === 'internal') {
+          $linkPopover.find('button:first').hide();
+        } else {
+          $linkPopover.find('button:first').show();
+        }
         showPopover($linkPopover, oStyle.anchor);
       } else {
         $linkPopover.hide();
@@ -2178,8 +2188,6 @@
     /**
      * Show document dialog and set event handlers on dialog controls.
      *
-     * TODO
-     *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @param {String} searchquery
@@ -2189,10 +2197,10 @@
     this.showDocumentDialog = function ($editable, $dialog, linkInfo, searchSuggestion, onDocumentLoad) {
       return $.Deferred(function (deferred) {
 
-        var $documentDialog = $dialog.find('.note-search-dialog'),
-        $searchQuery = $documentDialog.find('.note-search-query'),
-        $searchResults = $documentDialog.find('.note-search-results'),
-        $searchBtn = $documentDialog.find('.note-search-btn');
+        var $documentDialog = $dialog.find('.note-doclink-dialog'),
+        $searchQuery = $documentDialog.find('.note-doclink-query'),
+        $searchResults = $documentDialog.find('.note-doclink-results'),
+        $searchBtn = $documentDialog.find('.note-doclink-btn');
 
         var loadDocuments = function (query, callback) {
           if (!callback) {
@@ -2201,7 +2209,7 @@
           var loading = $.Deferred();
           callback($searchResults, query, loading);
           loading.done(function () {
-            $('.note-search-results li').one('click', function (event) {
+            $('.note-doclink-results li').one('click', function (event) {
               event.preventDefault();
               $documentDialog.modal('hide');
               var url = $(this).find('a:first').attr('href');
@@ -2212,16 +2220,10 @@
           });
         };
 
-        $documentDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
+        $documentDialog.one('shown.bs.modal', function () {
           $searchQuery.keyup(function () {
             toggleBtn($searchBtn, $searchQuery.val());
-          }).val(searchSuggestion);
-
-          if (searchSuggestion === '') {
-            $searchQuery.trigger('focus');
-          }
+          }).val(searchSuggestion).trigger('focus');
 
           $searchBtn.on('click', function (event) {
             event.preventDefault();
@@ -2229,14 +2231,12 @@
           });
 
           loadDocuments(searchSuggestion, onDocumentLoad);
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
-          $searchQuery.off('keyup');
         }).modal('show');
       }).promise();
-    };
 
+    };
 
     /**
      * show help dialog
@@ -2407,18 +2407,26 @@
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, true, bNewWindow);
+            if (linkInfo.text === '') {
+              linkInfo.text = sLinkUrl;
+            }
+            editor.createLink($editable, sLinkUrl, true, bNewWindow, linkInfo);
           });
         } else if (sEvent === 'showDocumentDialog') { // popover to dialog
           $editable.focus();
           var documentLinkInfo = editor.getLinkInfo();
-          var searchSuggestion = options.documentSearchQuery || '';
+          var searchSuggestion = documentLinkInfo.text !== '' ? documentLinkInfo.text : options.documentSearchQuery || '';
 
           editor.saveRange($editable);
           dialog.showDocumentDialog($editable, $dialog, documentLinkInfo, searchSuggestion, options.onDocumentLoad)
               .then(function (sDocumentUrl, bNewWindow, sLinkText) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sDocumentUrl, false, bNewWindow, sLinkText);
+            if (documentLinkInfo.text === '') {
+              documentLinkInfo.text = sLinkText;
+            }
+            documentLinkInfo.title = sLinkText;
+            documentLinkInfo.type = 'internal';
+            editor.createLink($editable, sDocumentUrl, false, bNewWindow, documentLinkInfo);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
@@ -2785,8 +2793,8 @@
       link: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
       },
-      document: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.document.link + '" data-event="showDocumentDialog" tabindex="-1"><i class="fa fa-file-text-o icon-file-text-alt"></i></button>';
+      doclink: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.doclink.link + '" data-event="showDocumentDialog" tabindex="-1"><i class="fa fa-file-text-o icon-file-text-alt"></i></button>';
       },
       video: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
@@ -2938,7 +2946,7 @@
                   '<div class="popover-content note-link-content">' +
                     '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                     '<div class="note-insert btn-group">' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
                     '</div>' +
                   '</div>' +
@@ -3094,7 +3102,7 @@
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + lang.image.insert + '</button>' +
+                       '<button class="btn btn-primary note-image-btn disabled" disabled="disabled">' + lang.image.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -3129,35 +3137,35 @@
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + lang.link.insert + '</button>' +
+                       '<button class="btn btn-primary note-link-btn disabled" disabled="disabled">' + lang.link.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
                '</div>';
       };
 
-      var tplDocumentDialog = function () {
-        return '<div class="note-search-dialog modal" aria-hidden="false">' +
+      var tplDocumentLinkDialog = function () {
+        return '<div class="note-doclink-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h3>' + lang.document.insert + '</h3>' +
+                       '<h3>' + lang.doclink.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
                          '<div class="form-group">' +
-                           '<label>' + lang.document.label + ' <small class="text-muted">' + lang.document.hint + '</small></label>' +
+                           '<label>' + lang.doclink.label + ' <small class="text-muted">' + lang.doclink.hint + '</small></label>' +
                            '<div class="input-group">' +
-                             '<input class="note-search-query form-control span12" type="text" />' +
+                             '<input class="note-doclink-query form-control span12" type="text" />' +
                              '<span class="input-group-btn">' +
-                               '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
+                               '<button class="btn btn-primary note-doclink-btn">' + lang.doclink.search + '</button>' +
                              '</span>' +
                            '</div>' +
                          '</div>' +
                        '</div>' +
                        '<div class="row-fluid">' +
-                         '<div class="note-search-results">' +
+                         '<div class="note-doclink-results">' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
@@ -3178,13 +3186,13 @@
                        '<div class="row-fluid">' +
 
                        '<div class="form-group">' +
-                         '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
+                         '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
                          '<input class="note-video-url form-control span12" type="text" />' +
                        '</div>' +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
+                       '<button class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -3209,7 +3217,7 @@
       return '<div class="note-dialog">' +
                tplImageDialog() +
                tplLinkDialog() +
-               tplDocumentDialog() +
+               tplDocumentLinkDialog() +
                tplVideoDialog() +
                tplHelpDialog() +
              '</div>';

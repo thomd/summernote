@@ -5156,24 +5156,30 @@ textarea.note-editor .input-group-sm > .input-group-btn > .btn {
   border-width: 0 5px 5px;
   border-bottom-color: #000000;
 }
-.note-editor .note-search-results {
+.note-editor .note-doclink-results {
 	min-height: 100px;
 }
-.note-editor .note-search-results ul {
+.note-editor .note-doclink-results ul {
 	padding-left: 0;
 	margin-top: 20px;
 	overflow-y: auto;
 	max-height: 300px;
 }
-.note-editor .note-search-dialog .form-group label {
+.note-editor .note-doclink-dialog .form-group label {
 	display: inline-block;
 	margin-bottom: 5px;
 }
-.note-editor .note-search-results p {
+.note-editor .note-doclink-results p {
 	padding: 0 15px;
 }
 .note-editor .thumbnail:hover {
   background-color: #f7f7f7;
   border: 1px solid #eaeaea;
   cursor: pointer;
+}
+.note-editor .note-editable img[style*="left"] {
+  margin-right: 15px;
+}
+.note-editor .note-editable img[style*="right"] {
+  margin-left: 15px;
 }

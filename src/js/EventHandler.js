@@ -162,18 +162,26 @@ define([
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, true, bNewWindow);
+            if (linkInfo.text === '') {
+              linkInfo.text = sLinkUrl;
+            }
+            editor.createLink($editable, sLinkUrl, true, bNewWindow, linkInfo);
           });
         } else if (sEvent === 'showDocumentDialog') { // popover to dialog
           $editable.focus();
           var documentLinkInfo = editor.getLinkInfo();
-          var searchSuggestion = options.documentSearchQuery || '';
+          var searchSuggestion = documentLinkInfo.text !== '' ? documentLinkInfo.text : options.documentSearchQuery || '';
 
           editor.saveRange($editable);
           dialog.showDocumentDialog($editable, $dialog, documentLinkInfo, searchSuggestion, options.onDocumentLoad)
               .then(function (sDocumentUrl, bNewWindow, sLinkText) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sDocumentUrl, false, bNewWindow, sLinkText);
+            if (documentLinkInfo.text === '') {
+              documentLinkInfo.text = sLinkText;
+            }
+            documentLinkInfo.title = sLinkText;
+            documentLinkInfo.type = 'internal';
+            editor.createLink($editable, sDocumentUrl, false, bNewWindow, documentLinkInfo);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();

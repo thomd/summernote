@@ -138,8 +138,6 @@ define('summernote/module/Dialog', function () {
     /**
      * Show document dialog and set event handlers on dialog controls.
      *
-     * TODO
-     *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @param {String} searchquery
@@ -149,10 +147,10 @@ define('summernote/module/Dialog', function () {
     this.showDocumentDialog = function ($editable, $dialog, linkInfo, searchSuggestion, onDocumentLoad) {
       return $.Deferred(function (deferred) {
 
-        var $documentDialog = $dialog.find('.note-search-dialog'),
-        $searchQuery = $documentDialog.find('.note-search-query'),
-        $searchResults = $documentDialog.find('.note-search-results'),
-        $searchBtn = $documentDialog.find('.note-search-btn');
+        var $documentDialog = $dialog.find('.note-doclink-dialog'),
+        $searchQuery = $documentDialog.find('.note-doclink-query'),
+        $searchResults = $documentDialog.find('.note-doclink-results'),
+        $searchBtn = $documentDialog.find('.note-doclink-btn');
 
         var loadDocuments = function (query, callback) {
           if (!callback) {
@@ -161,7 +159,7 @@ define('summernote/module/Dialog', function () {
           var loading = $.Deferred();
           callback($searchResults, query, loading);
           loading.done(function () {
-            $('.note-search-results li').one('click', function (event) {
+            $('.note-doclink-results li').one('click', function (event) {
               event.preventDefault();
               $documentDialog.modal('hide');
               var url = $(this).find('a:first').attr('href');
@@ -172,16 +170,10 @@ define('summernote/module/Dialog', function () {
           });
         };
 
-        $documentDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
+        $documentDialog.one('shown.bs.modal', function () {
           $searchQuery.keyup(function () {
             toggleBtn($searchBtn, $searchQuery.val());
-          }).val(searchSuggestion);
-
-          if (searchSuggestion === '') {
-            $searchQuery.trigger('focus');
-          }
+          }).val(searchSuggestion).trigger('focus');
 
           $searchBtn.on('click', function (event) {
             event.preventDefault();
@@ -189,14 +181,12 @@ define('summernote/module/Dialog', function () {
           });
 
           loadDocuments(searchSuggestion, onDocumentLoad);
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
-          $searchQuery.off('keyup');
         }).modal('show');
       }).promise();
-    };
 
+    };
 
     /**
      * show help dialog

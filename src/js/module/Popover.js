@@ -31,6 +31,11 @@ define('summernote/module/Popover', function () {
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
         $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
+        if (oStyle.anchor.rel === 'internal') {
+          $linkPopover.find('button:first').hide();
+        } else {
+          $linkPopover.find('button:first').show();
+        }
         showPopover($linkPopover, oStyle.anchor);
       } else {
         $linkPopover.hide();

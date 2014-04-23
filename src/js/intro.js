@@ -1,9 +1,9 @@
 /**
  * Super simple wysiwyg editor on Bootstrap v@VERSION
- * https://github.com/thomd/summernote (forked from http://hackerwins.github.io/summernote/)
+ * https://github.com/thomd/summernote
  *
  * summernote.js
- * Copyright 2013 Alan Hong. and outher contributors
+ * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
  * Date: @DATE

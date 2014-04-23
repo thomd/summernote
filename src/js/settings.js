@@ -149,7 +149,7 @@ define('summernote/settings', function () {
           url: 'To what URL should this link go?',
           openInNewWindow: 'Open in new window'
         },
-        document: {
+        doclink: {
           link: 'Document',
           insert: 'Insert Link to Document',
           search: 'Search',

@@ -17,8 +17,8 @@ define([
       link: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
       },
-      document: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.document.link + '" data-event="showDocumentDialog" tabindex="-1"><i class="fa fa-file-text-o icon-file-text-alt"></i></button>';
+      doclink: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.doclink.link + '" data-event="showDocumentDialog" tabindex="-1"><i class="fa fa-file-text-o icon-file-text-alt"></i></button>';
       },
       video: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
@@ -170,7 +170,7 @@ define([
                   '<div class="popover-content note-link-content">' +
                     '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                     '<div class="note-insert btn-group">' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
                     '</div>' +
                   '</div>' +
@@ -326,7 +326,7 @@ define([
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + lang.image.insert + '</button>' +
+                       '<button class="btn btn-primary note-image-btn disabled" disabled="disabled">' + lang.image.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -361,35 +361,35 @@ define([
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + lang.link.insert + '</button>' +
+                       '<button class="btn btn-primary note-link-btn disabled" disabled="disabled">' + lang.link.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
                '</div>';
       };
 
-      var tplDocumentDialog = function () {
-        return '<div class="note-search-dialog modal" aria-hidden="false">' +
+      var tplDocumentLinkDialog = function () {
+        return '<div class="note-doclink-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h3>' + lang.document.insert + '</h3>' +
+                       '<h3>' + lang.doclink.insert + '</h3>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
                          '<div class="form-group">' +
-                           '<label>' + lang.document.label + ' <small class="text-muted">' + lang.document.hint + '</small></label>' +
+                           '<label>' + lang.doclink.label + ' <small class="text-muted">' + lang.doclink.hint + '</small></label>' +
                            '<div class="input-group">' +
-                             '<input class="note-search-query form-control span12" type="text" />' +
+                             '<input class="note-doclink-query form-control span12" type="text" />' +
                              '<span class="input-group-btn">' +
-                               '<button class="btn btn-primary note-search-btn" type="button">' + lang.document.search + '</button>' +
+                               '<button class="btn btn-primary note-doclink-btn">' + lang.doclink.search + '</button>' +
                              '</span>' +
                            '</div>' +
                          '</div>' +
                        '</div>' +
                        '<div class="row-fluid">' +
-                         '<div class="note-search-results">' +
+                         '<div class="note-doclink-results">' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
@@ -410,13 +410,13 @@ define([
                        '<div class="row-fluid">' +
 
                        '<div class="form-group">' +
-                         '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
+                         '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
                          '<input class="note-video-url form-control span12" type="text" />' +
                        '</div>' +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
+                       '<button class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -441,7 +441,7 @@ define([
       return '<div class="note-dialog">' +
                tplImageDialog() +
                tplLinkDialog() +
-               tplDocumentDialog() +
+               tplDocumentLinkDialog() +
                tplVideoDialog() +
                tplHelpDialog() +
              '</div>';

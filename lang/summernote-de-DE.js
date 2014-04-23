@@ -28,12 +28,12 @@
         link: 'Link',
         insert: 'Link einfügen',
         unlink: 'Link entfernen',
-        edit: 'Editieren',
+        edit: 'Link bearbeiten',
         textToDisplay: 'Anzeigetext',
         url: 'Ziel des Links?',
         openInNewWindow: 'In einem neuen Fenster öffnen'
       },
-      document: {
+      doclink: {
         link: 'Dokument Link',
         insert: 'Dokument Link einfügen',
         search: 'Suchen',
@@ -43,9 +43,9 @@
       video: {
         video: 'Video',
         videoLink: 'Video Link',
-        insert: 'Insert Video',
+        insert: 'Video einfügen',
         url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine oder Instagram)'
       },
       table: {
         table: 'Tabelle'

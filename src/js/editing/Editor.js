@@ -284,7 +284,7 @@ define([
      * @param {String} sLinkText
      * @param {Boolean} bNewWindow [optional]
      */
-    this.createLink = function ($editable, sLinkUrl, bAddProtocol, bNewWindow, sLinkText) {
+    this.createLink = function ($editable, sLinkUrl, bAddProtocol, bNewWindow, oLinkInfo) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -311,12 +311,14 @@ define([
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
 
         // link text
-        if (sLinkText !== undefined) {
-          elAnchor.innerHTML = sLinkText;
+        if (oLinkInfo && oLinkInfo.text !== '') {
+          elAnchor.innerHTML = oLinkInfo.text;
         }
 
         // title
-        $(elAnchor).attr('title', sLinkText || '');
+        if (oLinkInfo) {
+          $(elAnchor).attr('title', oLinkInfo.title);
+        }
 
         // target
         if (bNewWindow) {
@@ -324,6 +326,16 @@ define([
         } else {
           $(elAnchor).removeAttr('target');
         }
+
+        // mark links to internal documents
+        if (oLinkInfo && oLinkInfo.type === 'internal') {
+          $(elAnchor).attr('rel', 'internal');
+        }
+
+        // append whitespace and place caret at the end
+        var whitespace = document.createTextNode('\u00A0');
+        elAnchor.parentNode.appendChild(whitespace);
+        window.getSelection().collapse(elAnchor.nextSibling, 1);
       });
     };
 
@@ -393,13 +405,6 @@ define([
     this.floatMe = function ($editable, sValue, $target) {
       recordUndo($editable);
       $target.css('float', sValue);
-      if (sValue === 'right') {
-        $target.css('padding', '0 0 0 15px');
-      } else if (sValue === 'left') {
-        $target.css('padding', '0 15px 0 0');
-      } else {
-        $target.css('padding', '0');
-      }
     };
 
     /**
