@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-28T12:38Z
+ * Date: 2014-04-28T13:14Z
  */
 (function (factory) {
   /* global define */
@@ -55,7 +55,7 @@
    */
   var agent = {
     bMac: navigator.appVersion.indexOf('Mac') > -1,
-    bMSIE: navigator.userAgent.indexOf('MSIE') > -1,
+    bMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
     bFF: navigator.userAgent.indexOf('Firefox') > -1,
     jqueryVersion: parseFloat($.fn.jquery),
     bCodeMirror: !!CodeMirror
@@ -618,7 +618,7 @@
 
       focus: false,                 // set focus after initilize summernote
 
-      tabsize: null,                // size of tab ex) 2 or 4
+      tabsize: 4,                   // size of tab ex) 2 or 4
       styleWithSpan: true,          // style with span (Chrome and FF)
 
       disableLinkTarget: false,     // hide link Target Checkbox
