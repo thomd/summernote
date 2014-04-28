@@ -164,7 +164,7 @@ define('summernote/module/Dialog', function () {
               $documentDialog.modal('hide');
               var url = $(this).find('a:first').attr('href');
               var link = $(this).find('a:first').text();
-              var openInNewWindow = linkInfo.newWindow || true;
+              var openInNewWindow = false;
               deferred.resolve(url, openInNewWindow, link);
             });
           });
