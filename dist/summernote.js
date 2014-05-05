@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-28T13:14Z
+ * Date: 2014-04-30T14:45Z
  */
 (function (factory) {
   /* global define */
@@ -3326,7 +3326,7 @@
         sToolbar += '</div>';
       }
 
-      sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
+      sToolbar = '<div class="note-toolbar btn-toolbar' + (options.toolbar.length === 0 ? ' hidden' : '') + '">' + sToolbar + '</div>';
 
       var $toolbar = $(sToolbar).prependTo($editor);
       createPalette($toolbar);

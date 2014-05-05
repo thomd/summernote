@@ -550,7 +550,7 @@ define([
         sToolbar += '</div>';
       }
 
-      sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
+      sToolbar = '<div class="note-toolbar btn-toolbar' + (options.toolbar.length === 0 ? ' hidden' : '') + '">' + sToolbar + '</div>';
 
       var $toolbar = $(sToolbar).prependTo($editor);
       createPalette($toolbar);
