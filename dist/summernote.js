@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-30T14:45Z
+ * Date: 2014-05-27T11:01Z
  */
 (function (factory) {
   /* global define */
@@ -568,7 +568,7 @@
 
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '',
+      emptyPara: '<p><br/></p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
