@@ -31,10 +31,15 @@ define([
         var $holder = $(elHolder);
 
         // createLayout with options
-        renderer.createLayout($holder, options);
+        if (options.inlineEditing) {
+          $holder.attr('contenteditable', true);
+          $holder.addClass('note-inline-editor');
+        } else {
+          renderer.createLayout($holder, options);
 
-        var info = renderer.layoutInfoFromHolder($holder);
-        eventHandler.attach(info, options);
+          var info = renderer.layoutInfoFromHolder($holder);
+          eventHandler.attach(info, options);
+        }
 
         // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
@@ -57,7 +62,7 @@ define([
 
       return this;
     },
-    // 
+    //
 
     /**
      * get the HTML contents of note or set the HTML contents of note.
@@ -97,6 +102,7 @@ define([
     destroy: function () {
       this.each(function (idx, elHolder) {
         var $holder = $(elHolder);
+        $holder.removeClass('note-inline-editor');
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }

@@ -7,6 +7,7 @@ define('summernote/settings', function () {
      * options for init
      */
     options: {
+      inlineEditing: false,         // inline editing
       width: null,                  // set editor width
       height: null,                 // set fixed editable height with statusbar
       minHeight: null,              // set dynamic editable min-height without statusbar (height must be 'null')

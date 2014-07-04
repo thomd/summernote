@@ -1,6 +1,5 @@
 .note-editor {
-  /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
-
+  margin: -2px 0 13px 0;
 }
 .note-editor article,
 .note-editor aside,
@@ -296,7 +295,7 @@
   border: 0;
 }
 .note-editor p {
-  margin: 0 0 10px;
+  margin: 0;
 }
 .note-editor .lead {
   margin-bottom: 20px;

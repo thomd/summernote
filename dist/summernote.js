@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-27T11:01Z
+ * Date: 2014-06-20T21:05Z
  */
 (function (factory) {
   /* global define */
@@ -612,6 +612,7 @@
      * options for init
      */
     options: {
+      inlineEditing: false,         // inline editing
       width: null,                  // set editor width
       height: null,                 // set fixed editable height with statusbar
       minHeight: null,              // set dynamic editable min-height without statusbar (height must be 'null')
@@ -3416,10 +3417,15 @@
         var $holder = $(elHolder);
 
         // createLayout with options
-        renderer.createLayout($holder, options);
+        if (options.inlineEditing) {
+          $holder.attr('contenteditable', true);
+          $holder.addClass('note-inline-editor');
+        } else {
+          renderer.createLayout($holder, options);
 
-        var info = renderer.layoutInfoFromHolder($holder);
-        eventHandler.attach(info, options);
+          var info = renderer.layoutInfoFromHolder($holder);
+          eventHandler.attach(info, options);
+        }
 
         // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
@@ -3442,7 +3448,7 @@
 
       return this;
     },
-    // 
+    //
 
     /**
      * get the HTML contents of note or set the HTML contents of note.
@@ -3482,6 +3488,7 @@
     destroy: function () {
       this.each(function (idx, elHolder) {
         var $holder = $(elHolder);
+        $holder.removeClass('note-inline-editor');
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }
