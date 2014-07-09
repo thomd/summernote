@@ -128,20 +128,25 @@ define([
      * @param {String} sUrl
      */
     this.insertImage = function ($editable, sUrl) {
-      async.createImage(sUrl).then(function ($image) {
-        recordUndo($editable);
-        $image.css({
-          display: '',
-          width: Math.min($editable.width(), $image.width())
+      return $.Deferred(function (deferred) {
+        async.createImage(sUrl).then(function ($image) {
+          recordUndo($editable);
+          $image.css({
+            display: '',
+            width: Math.min($editable.width(), $image.width())
+          });
+          range.create().insertNode($image[0]);
+          deferred.resolve($(this));
+        }).fail(function () {
+          var callbacks = $editable.data('callbacks');
+          if (callbacks.onImageUploadError) {
+            callbacks.onImageUploadError();
+          }
+          deferred.reject($(this));
         });
-        range.create().insertNode($image[0]);
-      }).fail(function () {
-        var callbacks = $editable.data('callbacks');
-        if (callbacks.onImageUploadError) {
-          callbacks.onImageUploadError();
-        }
-      });
+      }).promise();
     };
+
 
     /**
      * insert video

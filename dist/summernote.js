@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-06-20T21:05Z
+ * Date: 2014-07-07T12:05Z
  */
 (function (factory) {
   /* global define */
@@ -568,7 +568,7 @@
 
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '<p><br/></p>',
+      emptyPara: '<p></p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
@@ -1452,20 +1452,25 @@
      * @param {String} sUrl
      */
     this.insertImage = function ($editable, sUrl) {
-      async.createImage(sUrl).then(function ($image) {
-        recordUndo($editable);
-        $image.css({
-          display: '',
-          width: Math.min($editable.width(), $image.width())
+      return $.Deferred(function (deferred) {
+        async.createImage(sUrl).then(function ($image) {
+          recordUndo($editable);
+          $image.css({
+            display: '',
+            width: Math.min($editable.width(), $image.width())
+          });
+          range.create().insertNode($image[0]);
+          deferred.resolve($(this));
+        }).fail(function () {
+          var callbacks = $editable.data('callbacks');
+          if (callbacks.onImageUploadError) {
+            callbacks.onImageUploadError();
+          }
+          deferred.reject($(this));
         });
-        range.create().insertNode($image[0]);
-      }).fail(function () {
-        var callbacks = $editable.data('callbacks');
-        if (callbacks.onImageUploadError) {
-          callbacks.onImageUploadError();
-        }
-      });
+      }).promise();
     };
+
 
     /**
      * insert video
