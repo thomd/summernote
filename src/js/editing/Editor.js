@@ -340,7 +340,7 @@ define([
         // append whitespace and place caret at the end
         var whitespace = document.createTextNode('\u00A0');
         elAnchor.parentNode.appendChild(whitespace);
-        window.getSelection().collapse(elAnchor.nextSibling, 1);
+        window.getSelection().collapse(elAnchor.nextSibling, 0);
       });
     };
 

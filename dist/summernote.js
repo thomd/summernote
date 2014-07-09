@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-07T12:05Z
+ * Date: 2014-07-09T12:17Z
  */
 (function (factory) {
   /* global define */
@@ -568,7 +568,7 @@
 
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '<p></p>',
+      emptyPara: '',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
@@ -1664,7 +1664,7 @@
         // append whitespace and place caret at the end
         var whitespace = document.createTextNode('\u00A0');
         elAnchor.parentNode.appendChild(whitespace);
-        window.getSelection().collapse(elAnchor.nextSibling, 1);
+        window.getSelection().collapse(elAnchor.nextSibling, 0);
       });
     };
 
